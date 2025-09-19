@@ -155,14 +155,14 @@
     onAuthStateChanged(auth, user => {
       if (!user) { 
         alert("Sessão expirada. Faça login novamente."); 
-        window.location.href = "/1.1/index.html"; 
+        window.location.href = "/1.1/login.index.html"; 
         return; 
       }
 
       const uid = user.uid;
       const conviteCurto = uid.slice(-6);
-      // Link ajustado para a pasta 1.1
-      const link = `${window.location.origin}/1.1/index.html?ref=${conviteCurto}`;
+      // Link ajustado para login.index.html dentro da pasta 1.1
+      const link = `${window.location.origin}/1.1/login.index.html?ref=${conviteCurto}`;
       document.getElementById("linkConvite").value = link;
 
       const usuariosRef = ref(db, "usuarios");
@@ -218,4 +218,4 @@
     };
   </script>
 </body>
-  </html>
+    </html>
