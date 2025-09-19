@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VANGSFUTURIS</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root {
+      --cor-fundo: #0b2340;      
+      --cor-principal: #ffffff;   
+      --cor-secundaria: #1976d2;  
+      --cor-input: #1a365f;       
+      --cor-input-texto: #ffffff; 
+      --cor-borda: #2c4b7a;       
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin:0; padding:0; font-family:'Segoe UI', sans-serif; }
+    body { 
+      background: var(--cor-fundo); 
+      color: var(--cor-principal); 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      min-height: 100vh;
+    }
+
+    .card {
+      background: var(--cor-fundo);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 380px;
+      padding: 32px 24px;
+      color: var(--cor-principal);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+
+    .card h2 {
+      font-size: 22px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .campo {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .campo label {
+      display:block;
+      font-size:14px;
+      font-weight:600;
+      margin-bottom:6px;
+      color: var(--cor-principal);
+    }
+
+    .entrada {
+      width:100%;
+      padding:14px 16px;
+      border:1px solid var(--cor-borda);
+      border-radius: var(--radius);
+      font-size:15px;
+      background: var(--cor-input);
+      color: var(--cor-input-texto);
+      outline:none;
+      transition:0.3s;
+    }
+
+    .entrada:focus {
+      border-color: var(--cor-secundaria);
+      box-shadow:0 0 4px rgba(25,118,210,0.5);
+      background:#1f3a66;
+    }
+
+    .telefone-box{
+      display:flex; 
+      align-items:center;
+    }
+
+    .telefone-prefixo{
+      padding:14px 10px;
+      background:#1a365f;
+      border:1px solid var(--cor-borda);
+      border-radius:12px 0 0 12px;
+      font-weight:bold;
+      font-size:15px;
+      color: var(--cor-principal);
+    }
+
+    .telefone-input{
+      flex:1;
+      border:1px solid var(--cor-borda);
+      border-left:none;
+      border-radius:0 12px 12px 0;
+      padding:14px 12px;
+      font-size:15px;
+      background: var(--cor-input);
+      color: var(--cor-input-texto);
+      outline:none;
+      transition:0.3s;
+    }
+
+    .telefone-input:focus{border-color: var(--cor-secundaria); background:#1f3a66;}
+
+    .botao{
+      width:100%;
+      padding:14px;
+      border:none;
+      border-radius: var(--radius);
+      font-weight:600;
+      font-size:16px;
+      cursor:pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      background: var(--cor-secundaria);
+      color: var(--cor-principal);
+    }
+
+    .botao:hover{background:#3a7bd5;}
+    .botao:active{transform: scale(0.97); box-shadow:0 0 12px rgba(255,255,255,0.4);}
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Registro VANGSFUTURIS</h2>
+
+    <div class="campo">
+      <label for="nome">Nome completo</label>
+      <input type="text" id="nome" class="entrada" placeholder="Informe seu nome" required />
+    </div>
+
+    <div class="campo">
+      <label for="telefone">Número de Telefone</label>
+      <div class="telefone-box">
+        <span class="telefone-prefixo">+244</span>
+        <input type="tel" id="telefone" class="telefone-input" placeholder="9 dígitos" maxlength="9" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required />
+      </div>
+    </div>
+
+    <div class="campo">
+      <label for="senha">Senha de Acesso</label>
+      <input type="text" id="senha" class="entrada" placeholder="Crie sua senha" required />
+    </div>
+
+    <div class="campo">
+      <label for="codigoConvite">Código de Convite</label>
+      <input type="text" id="codigoConvite" class="entrada" placeholder="Código de convite" readonly />
+    </div>
+
+    <div class="campo">
+      <button class="botao" onclick="registrar()">Concluir Registro</button>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyChrog4zZNoK8HTMl1MTMD43U7HHxBMtVw",
+      authDomain: "palpite3ad.firebaseapp.com",
+      databaseURL: "https://palpite3ad-default-rtdb.firebaseio.com",
+      projectId: "palpite3ad",
+      storageBucket: "palpite3ad.appspot.com",
+      messagingSenderId: "435372004187",
+      appId: "1:435372004187:web:3b7ee8b621fba094b2407e"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+
+    let codigoRealCompleto = null;
+
+    window.onload = function () {
+      const params = new URLSearchParams(window.location.search);
+      const ref = params.get("ref");
+      if (ref) {
+        codigoRealCompleto = ref;
+        document.getElementById("codigoConvite").value = ref.substring(0,6);
+      }
+    };
+
+    function registrar(){
+      const nome = document.getElementById("nome").value.trim();
+      const telefone = document.getElementById("telefone").value.trim();
+      const senha = document.getElementById("senha").value.trim();
+
+      if(!nome || !telefone || !senha){
+        alert("Preencha todos os campos.");
+        return;
+      }
+
+      if(telefone.length !== 9){
+        alert("O telefone deve conter exatamente 9 dígitos.");
+        return;
+      }
+
+      const telefone9 = telefone;
+      const emailFalso = telefone9 + "@kerocapital.com"; 
+
+      auth.createUserWithEmailAndPassword(emailFalso, senha)
+        .then(cred=>{
+          const uid = cred.user.uid;
+          const usuario = {
+            nome: nome,
+            telefone: telefone9,
+            saldo: 0,
+            codigoConviteCurto: uid.substring(0,6),
+            dataRegistro: new Date().toISOString()
+          };
+          if(codigoRealCompleto){
+            usuario.convidadoPor = codigoRealCompleto;
+          }
+          return database.ref("usuarios/"+uid).set(usuario);
+        })
+        .then(()=>{
+          alert("Registro efetuado com êxito!");
+          window.location.href="tela.html";
+        })
+        .catch(err=>{
+          alert("Erro: "+err.message);
+        });
+    }
+  </script>
+</body>
+</html>

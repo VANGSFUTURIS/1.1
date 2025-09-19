@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VANGSFUTRIS</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top left,#0a0f2d,#0b223d 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e0e6f0;
+      padding: 20px;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 450px;
+      background: rgba(10,15,45,0.85);
+      border-radius: 18px;
+      padding: 30px 25px;
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
+      backdrop-filter: blur(8px);
+      animation: fadeIn 0.8s ease;
+    }
+    @keyframes fadeIn {
+      from {opacity:0; transform: translateY(20px);}
+      to   {opacity:1; transform: translateY(0);}
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      font-size: 1.8rem;
+      color: #4ee0ff;
+      letter-spacing: 1px;
+    }
+    .link-hist {
+      text-decoration: none;
+      background: #4ee0ff;
+      color: #0a0f2d;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: 0.3s;
+    }
+    .link-hist:hover { background: #35b9d6; }
+
+    .saldo-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(78,224,255,0.4);
+      border-radius: 14px;
+      padding: 15px;
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1rem;
+    }
+    .saldo-card strong { color: #4ee0ff; font-size: 1.1rem; }
+
+    .group { margin-bottom: 16px; }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #cfe7ff;
+    }
+    input[type="number"],
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      color: #e0e6f0;
+      font-size: 15px;
+      outline: none;
+      transition: border 0.3s;
+    }
+    input:focus { border-color: #4ee0ff; }
+
+    .bancos {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .banco {
+      flex: 1;
+      min-width: 60px;
+      text-align: center;
+      padding: 10px 0;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.07);
+      cursor: pointer;
+      font-weight: bold;
+      border: 1px solid transparent;
+      transition: 0.3s;
+    }
+    .banco:hover { border-color: #4ee0ff; }
+    .banco.ativo {
+      background: #4ee0ff;
+      color: #0a0f2d;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(90deg,#4ee0ff,#35b9d6);
+      color: #0a0f2d;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn:hover { background: linear-gradient(90deg,#35b9d6,#4ee0ff); }
+    .btn:disabled { background: gray; cursor: not-allowed; }
+
+    .note {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #9bbcd6;
+      margin-top: 14px;
+      line-height: 1.4;
+    }
+    .mensagem {
+      text-align: center;
+      margin-top: 14px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <h1>Retirada</h1>
+      <a href="registros2.html" class="link-hist">Registro</a>
+    </div>
+
+    <div class="saldo-card">
+      Saldo disponível: <strong id="saldo">A carregar...</strong>
+    </div>
+
+    <div class="group">
+      <label for="valor">Valor (AOA)</label>
+      <input type="number" id="valor" placeholder="Mínimo 2000 AOA">
+    </div>
+
+    <div class="group">
+      <label>Instituição Bancária</label>
+      <div class="bancos" id="listaBancos">
+        <div class="banco" data-banco="BFA">BFA</div>
+        <div class="banco" data-banco="ATL">ATL</div>
+        <div class="banco" data-banco="BAI">BAI</div>
+        <div class="banco" data-banco="BIC">BIC</div>
+      </div>
+    </div>
+
+    <div class="group">
+      <label for="nib">Conta / IBAN</label>
+      <input type="text" id="nib" placeholder="Digite a conta ou IBAN">
+    </div>
+
+    <div class="group">
+      <label for="titular">Titular da Conta</label>
+      <input type="text" id="titular" placeholder="Nome do titular da conta">
+    </div>
+
+    <button class="btn" id="btnRetirar" onclick="fazerRetirada()">Confirmar Retirada</button>
+
+    <div class="note">
+      Verifique se todos os dados bancários estão corretos.  
+      Após a confirmação, a solicitação será analisada e concluída em até 1 hora.
+    </div>
+
+    <div class="mensagem" id="mensagem"></div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyChrog4zZNoK8HTMl1MTMD43U7HHxBMtVw",
+      authDomain: "palpite3ad.firebaseapp.com",
+      databaseURL: "https://palpite3ad-default-rtdb.firebaseio.com",
+      projectId: "palpite3ad",
+      storageBucket: "palpite3ad.appspot.com",
+      messagingSenderId: "435372004187",
+      appId: "1:435372004187:android:3b7ee8b621fba094b2407e"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    let userId = null;
+    let saldoAtual = 0;
+    let bancoSelecionado = "";
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) location.href = "index.html";
+      userId = user.uid;
+      const userRef = firebase.database().ref("usuarios/" + userId);
+
+      userRef.child("saldo").on("value", snap => {
+        saldoAtual = snap.val() || 0;
+        document.getElementById("saldo").innerText =
+          `AOA ${saldoAtual.toLocaleString('pt-AO')}`;
+      });
+
+      userRef.child("dadosBancarios").once("value").then(snap => {
+        if (snap.exists()) {
+          const d = snap.val();
+          bancoSelecionado = d.banco || "";
+          if (bancoSelecionado) {
+            document.querySelectorAll(".banco").forEach(el => {
+              if (el.dataset.banco === bancoSelecionado) el.classList.add("ativo");
+            });
+          }
+          document.getElementById("nib").value = d.nib || "";
+          document.getElementById("titular").value = d.titular || "";
+        }
+      });
+    });
+
+    document.addEventListener("click", e => {
+      if (e.target.classList.contains("banco")) {
+        document.querySelectorAll(".banco").forEach(el => el.classList.remove("ativo"));
+        e.target.classList.add("ativo");
+        bancoSelecionado = e.target.dataset.banco;
+      }
+    });
+
+    function fazerRetirada() {
+      const valor = parseFloat(document.getElementById("valor").value);
+      const nib = document.getElementById("nib").value.trim();
+      const titular = document.getElementById("titular").value.trim();
+      const msg = document.getElementById("mensagem");
+
+      if (isNaN(valor) || valor < 2000) {
+        msg.innerText = "⚠️ Valor mínimo para retirada é 2000 AOA.";
+        return;
+      }
+      if (valor > saldoAtual) {
+        msg.innerText = "⚠️ Valor excede o saldo disponível.";
+        return;
+      }
+      if (!bancoSelecionado || !nib || !titular) {
+        msg.innerText = "⚠️ Complete todos os dados bancários.";
+        return;
+      }
+
+      const userRef = firebase.database().ref("usuarios/" + userId);
+      const novoSaldo = saldoAtual - valor;
+      userRef.child("saldo").set(novoSaldo);
+      userRef.child("dadosBancarios").set({ banco: bancoSelecionado, nib, titular });
+
+      userRef.child("nome").once("value").then(n => {
+        const nome = n.val() || "Cliente";
+        firebase.database().ref("retiradas").push().set({
+          userId,
+          nome,
+          saldoAnterior: saldoAtual,
+          montanteSaque: valor,
+          banco: bancoSelecionado,
+          nib,
+          titular,
+          estado: "em análise",
+          data: new Date().toISOString()
+        });
+        msg.innerText = "✅ Solicitação de retirada enviada com sucesso!";
+      });
+    }
+  </script>
+</body>
+</html>

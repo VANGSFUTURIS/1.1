@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VANGSFUTURIS</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0a0f0d, #0d1f33);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 950px;
+      display: flex;
+      flex-wrap: wrap;
+      background: #0f1b2b;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.6);
+      overflow: hidden;
+      animation: slideUp 0.8s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {transform: translateY(60px); opacity:0;}
+      to {transform: translateY(0); opacity:1;}
+    }
+
+    .info-side {
+      flex: 1 1 300px;
+      background: #142a45;
+      padding: 30px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .info-side h2 {
+      color: #ffd700;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .info-box {
+      background: rgba(0,0,0,0.3);
+      border: 2px solid #ffd700;
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+
+    .info-box strong {
+      color: #ffd700;
+      display: block;
+      margin: 10px 0 5px;
+      font-size: 1.2rem;
+    }
+
+    .form-side {
+      flex: 1 1 350px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      background: #0f1b2b;
+    }
+
+    .top-action {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+    }
+
+    .top-action button {
+      background: transparent;
+      border: 2px solid #ffd700;
+      color: #ffd700;
+      padding: 8px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .top-action button:hover {
+      background: #ffd700;
+      color: #0f1b2b;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+      background: #1b2e48;
+      color: #fff;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    .upload-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .upload-box {
+      flex: 1;
+      background: #1b2e48;
+      border: 2px dashed #555;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .upload-box:hover {
+      border-color: #ffd700;
+      background: #223b5d;
+    }
+
+    .upload-box img {
+      max-width: 80px;
+      max-height: 80px;
+      margin-top: 8px;
+      border-radius: 10px;
+      border: 2px solid #444;
+    }
+
+    .btn-send {
+      flex: 0 0 auto;
+      padding: 14px 20px;
+      background: linear-gradient(90deg, #ffd700, #c79b00);
+      border: none;
+      border-radius: 14px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      color: #0f1b2b;
+      transition: 0.3s;
+    }
+
+    .btn-send:hover {
+      background: linear-gradient(90deg, #e6c200, #a98500);
+    }
+
+    .note, .mensagem {
+      font-size: 0.9rem;
+      text-align: center;
+      margin-top: 10px;
+      color: #bbb;
+    }
+
+    @media (max-width: 768px) {
+      .wrapper { flex-direction: column; }
+      .form-side { padding-top: 60px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+
+    <!-- Lado de Informações -->
+    <div class="info-side">
+      <h2>Depósito VANGSFUTURIS</h2>
+      <div class="info-box">
+        <strong>Entidade</strong> 10116
+        <strong>Referência</strong> 958557101
+      </div>
+
+      <!-- Instruções de Depósito -->
+      <div class="info-box">
+        <strong>Como Depositar</strong>
+        <p>1. Dirija-se a um ATM ou Multicaixa Express.</p>
+        <p>2. Selecione "Pagamento de Serviços" ou "Depósitos".</p>
+        <p>3. Insira a <strong>Entidade: 10116</strong> e a <strong>Referência: 958557101</strong>.</p>
+        <p>4. Digite o valor do depósito (mínimo 5.000 AOA).</p>
+        <p>5. Confirme e guarde o comprovativo.</p>
+        <p>6. Volte a esta página e envie a imagem do comprovativo.</p>
+      </div>
+
+      <p class="note">
+        Depósitos processados em até 5 minutos após verificação.
+      </p>
+    </div>
+
+    <!-- Lado do Formulário -->
+    <div class="form-side">
+      <div class="top-action">
+        <button onclick="abrirRegistos()">📜 Registos</button>
+      </div>
+
+      <div class="form-group">
+        <label for="valor">Valor do Depósito (AOA)</label>
+        <input type="number" id="valor" placeholder="Mínimo 5000">
+      </div>
+
+      <div class="upload-row">
+        <div class="upload-box" onclick="document.getElementById('comprovativo').click();">
+          Enviar Comprovativo
+          <div id="preview"></div>
+        </div>
+        <button class="btn-send" onclick="enviarComprovativo()">Confirmar</button>
+      </div>
+
+      <input type="file" id="comprovativo" style="display: none;" accept="image/*" onchange="mostrarPreview(event)">
+
+      <p class="note">
+        Certifique-se de anexar um documento legível para evitar atrasos.
+      </p>
+      <div class="mensagem" id="mensagem"></div>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyChrog4zZNoK8HTMl1MTMD43U7HHxBMtVw",
+      authDomain: "palpite3ad.firebaseapp.com",
+      databaseURL: "https://palpite3ad-default-rtdb.firebaseio.com",
+      projectId: "palpite3ad",
+      storageBucket: "palpite3ad.appspot.com",
+      messagingSenderId: "435372004187",
+      appId: "1:435372004187:android:3b7ee8b621fba094b2407e"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) location.href = "index.html";
+    });
+
+    function abrirRegistos() {
+      window.location.href = "registos.html";
+    }
+
+    function mostrarPreview(event) {
+      const file = event.target.files[0];
+      const previewDiv = document.getElementById("preview");
+      previewDiv.innerHTML = "";
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          previewDiv.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    async function enviarComprovativo() {
+      const user = firebase.auth().currentUser;
+      const valor = parseFloat(document.getElementById("valor").value);
+      const comprovativo = document.getElementById("comprovativo").files[0];
+      const mensagemEl = document.getElementById("mensagem");
+
+      if (!valor || valor < 5000) {
+        mensagemEl.innerText = "Digite um valor válido (mínimo 5000 AOA).";
+        return;
+      }
+      if (!comprovativo) {
+        mensagemEl.innerText = "Por favor, selecione o comprovativo (imagem).";
+        return;
+      }
+
+      try {
+        const snapshot = await firebase.storage()
+          .ref(`comprovativos/${user.uid}/${Date.now()}-${comprovativo.name}`)
+          .put(comprovativo);
+        const url = await snapshot.ref.getDownloadURL();
+
+        const userRef = firebase.database().ref("usuarios/" + user.uid);
+        const userSnapshot = await userRef.once("value");
+        const userData = userSnapshot.val() || {};
+
+        const nome = userData.nome || "Usuário";
+        const saldo = userData.saldo || 0;
+
+        await firebase.database().ref("depositosPendentes/" + user.uid).push({
+          nome,
+          saldoAtual: saldo,
+          valor,
+          status: "pendente",
+          comprovativoUrl: url,
+          data: new Date().toISOString()
+        });
+
+        mensagemEl.innerText = "✅ Comprovativo enviado com sucesso. Aguarde aprovação.";
+        document.getElementById("valor").value = "";
+        document.getElementById("comprovativo").value = "";
+        document.getElementById("preview").innerHTML = "";
+      } catch (err) {
+        console.error(err);
+        mensagemEl.innerText = "❌ Erro ao enviar comprovativo. Tente novamente.";
+      }
+    }
+  </script>
+</body>
+</html>

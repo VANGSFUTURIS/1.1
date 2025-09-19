@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>VANGSFUTRIS</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <style>
+    :root {
+      --azul-fundo: #0d1b2a;
+      --azul-card: #1b263b;
+      --cinza-claro: #e0e6ed;
+      --sombra: rgba(0,0,0,0.35);
+      --aprovado: #16a34a;
+      --pendente: #eab308;
+      --rejeitado: #dc2626;
+    }
+
+    body {
+      margin: 0;
+      padding: 25px 15px;
+      background: var(--azul-fundo);
+      font-family: 'Segoe UI', sans-serif;
+      color: var(--cinza-claro);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 28px;
+      font-size: 24px;
+      font-weight: 700;
+      color: #60a5fa; /* azul mais claro para título */
+    }
+
+    .painel {
+      max-width: 720px;
+      margin: 0 auto;
+      display: grid;
+      gap: 22px;
+    }
+
+    .cartao {
+      background: var(--azul-card);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 6px 14px var(--sombra);
+      transition: transform 0.2s ease;
+    }
+
+    .cartao:hover {
+      transform: translateY(-4px);
+    }
+
+    .cabecalho {
+      background: #1e3a8a; /* azul mais intenso */
+      color: #fff;
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .status {
+      padding: 6px 12px;
+      border-radius: 18px;
+      font-weight: 700;
+      font-size: 14px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+    .status.aprovado { background: var(--aprovado); }
+    .status.pendente { background: var(--pendente); color: #000; }
+    .status.rejeitado { background: var(--rejeitado); }
+
+    .conteudo {
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 15px;
+    }
+
+    .linha {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(224,230,237,0.2);
+    }
+
+    .linha:last-child {
+      border-bottom: none;
+    }
+
+    .label {
+      color: #a7b5c4;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+    }
+
+    .nenhum {
+      text-align: center;
+      color: #a7b5c4;
+      font-size: 16px;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📥 Registos de Depósitos</h1>
+  <div class="painel" id="listaDepositos"></div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyChrog4zZNoK8HTMl1MTMD43U7HHxBMtVw",
+      authDomain: "palpite3ad.firebaseapp.com",
+      databaseURL: "https://palpite3ad-default-rtdb.firebaseio.com",
+      projectId: "palpite3ad",
+      storageBucket: "palpite3ad.appspot.com",
+      messagingSenderId: "435372004187",
+      appId: "1:435372004187:android:3b7ee8b621fba094b2407e"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    function formatarData(ts){
+      const d = new Date(ts);
+      return d.toLocaleDateString("pt-PT",{year:"numeric",month:"2-digit",day:"2-digit"}) +
+             " " + d.toLocaleTimeString("pt-PT",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
+    }
+
+    function classeStatus(s){
+      const txt = (s || "").toLowerCase();
+      if(txt.includes("apro")) return "aprovado";
+      if(txt.includes("rej")) return "rejeitado";
+      return "pendente";
+    }
+
+    auth.onAuthStateChanged(user=>{
+      if(!user){
+        alert("Sessão expirada, faça login novamente.");
+        window.location.href = "index.html";
+        return;
+      }
+
+      const container = document.getElementById("listaDepositos");
+      db.ref("depositosPendentes/"+user.uid).once("value").then(snapshot=>{
+        if(!snapshot.exists()){
+          container.innerHTML = "<p class='nenhum'>Nenhum depósito registado.</p>";
+          return;
+        }
+
+        let html = "";
+        snapshot.forEach(child=>{
+          const v = child.val();
+          const id = child.key;
+          const status = v.status || "Pendente";
+          html += `
+            <div class="cartao">
+              <div class="cabecalho">
+                <div>🆔 ${id.slice(0,10)}</div>
+                <div class="status ${classeStatus(status)}">${status}</div>
+              </div>
+              <div class="conteudo">
+                <div class="linha">
+                  <div class="label">💰 Valor</div>
+                  <div>KZ ${parseFloat(v.valor).toLocaleString("pt-AO",{minimumFractionDigits:2})}</div>
+                </div>
+                <div class="linha">
+                  <div class="label">📅 Data</div>
+                  <div>${formatarData(v.data || v.timestamp)}</div>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      });
+    });
+  </script>
+</body>
+</html>

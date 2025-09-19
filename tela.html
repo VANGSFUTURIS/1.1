@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VANGSFUTURIS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* --- estilos originais inalterados --- */
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Segoe UI',sans-serif;background:radial-gradient(circle at top,#0f172a,#020617);color:#f8fafc;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;padding-bottom:80px;}
+    header{padding:12px 24px;background:#0f172a;border-bottom:1px solid rgba(255,255,255,0.08);}
+    .header-content{display:flex;align-items:center;justify-content:space-between;}
+    .header-left{display:flex;align-items:center;}
+    .header-title{font-size:18px;font-weight:700;color:#facc15;letter-spacing:1.5px;}
+    .lang-select{margin-left:14px;background:transparent;border:1px solid rgba(255,255,255,0.15);border-radius:6px;color:#e2e8f0;font-weight:500;padding:4px 10px;cursor:pointer;transition:all .3s;}
+    .lang-select:hover{border-color:#facc15;color:#facc15;}
+    .header-right{display:flex;align-items:center;gap:16px;position:relative;}
+    .icon-btn{position:relative;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+    .icon-btn img{width:22px;height:22px;opacity:0.9;transition:transform .2s;}
+    .icon-btn:hover img{transform:scale(1.1);opacity:1;}
+    .notif-badge{position:absolute;top:-5px;right:-6px;background:#ef4444;color:#fff;font-size:10px;font-weight:bold;border-radius:50%;padding:2px 5px;}
+    .profile{width:34px;height:34px;border-radius:50%;background:#1e293b;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .3s;}
+    .profile:hover{background:#334155;}
+    .profile img{width:18px;height:18px;filter:invert(1);}
+    .dropdown{display:none;position:absolute;top:46px;right:0;background:#1e293b;border:1px solid rgba(255,255,255,0.15);border-radius:8px;min-width:120px;z-index:99;box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+    .dropdown button{width:100%;padding:10px;background:none;border:none;color:#f87171;font-weight:600;cursor:pointer;text-align:left;}
+    .dropdown button:hover{background:#334155;}
+    .saldo-card{margin:20px auto;width:90%;background:linear-gradient(145deg,#3b82f6,#2563eb,#1d4ed8);border-radius:20px;padding:20px;color:#fff;box-shadow:0 6px 18px rgba(0,0,0,0.4);position:relative;overflow:hidden;z-index:3;}
+    .saldo-card::before{content:"";position:absolute;top:18px;right:-25px;width:90%;height:90%;border-radius:20px;background:linear-gradient(145deg,#22c55e,#16a34a);transform:rotate(-4deg);opacity:0.9;z-index:-1;}
+    .saldo-card::after{content:"";position:absolute;top:40px;right:-50px;width:80%;height:80%;border-radius:20px;background:linear-gradient(145deg,#ef4444,#dc2626);transform:rotate(-8deg);opacity:0.9;z-index:-2;}
+    .saldo-user{display:flex;justify-content:space-between;align-items:center;font-size:12px;opacity:0.85;margin-bottom:6px;}
+    #userName{font-weight:600;color:#fefce8;}
+    .user-id{font-size:11px;opacity:0.8;}
+    .saldo-linha{display:flex;justify-content:space-between;align-items:center;margin-top:10px;}
+    .saldo-valor{font-size:24px;font-weight:bold;}
+    .saldo-info{font-size:14px;opacity:0.95;}
+    .action-grid{margin:20px auto;width:92%;display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+    .action-card{background:#1e293b;border-radius:16px;padding:18px;display:flex;flex-direction:column;align-items:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.3);transition:transform .3s,background .3s;}
+    .action-card:hover{transform:translateY(-4px);background:#334155;}
+    .action-card img{width:40px;height:40px;margin-bottom:10px;}
+    .action-card span:first-child{font-weight:600;font-size:14px;color:#22c55e;}
+    .action-card span:last-child{font-size:12px;color:#94a3b8;text-align:center;}
+    .logout-btn{width:92%;margin:20px auto 0;display:block;background:#ef4444;color:#fff;border:none;border-radius:12px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;text-align:center;box-shadow:0 4px 10px rgba(0,0,0,0.3);transition:background .3s;}
+    .logout-btn:hover{background:#dc2626;}
+    .sobre-vanguard,.termos{margin:20px auto;width:90%;background:#1e293b;border-radius:16px;padding:18px;color:#cbd5e1;font-size:13px;line-height:1.5;}
+    .sobre-vanguard h2,.termos h2{color:#facc15;font-size:16px;margin-bottom:8px;}
+    .bottom-nav{position:fixed;bottom:0;left:0;width:100%;background:#ffffff;display:flex;justify-content:space-around;align-items:center;padding:6px 0;border-top:1px solid #ddd;box-shadow:0 -1px 6px rgba(0,0,0,0.08);z-index:50;}
+    .bottom-nav button{flex:1;background:none;border:none;display:flex;flex-direction:column;align-items:center;font-size:12px;color:#9ca3af;font-weight:500;padding:4px 0;cursor:pointer;transition:color .25s;}
+    .bottom-nav button img{width:24px;height:24px;margin-bottom:2px;opacity:0.7;transition:opacity .25s;}
+    .bottom-nav button.active{color:#2563eb;font-weight:600;}
+    .bottom-nav button.active img{opacity:1;}
+    .highlight-tab{background:#2563eb;border-radius:50%;padding:12px;position:absolute;top:-22px;box-shadow:0 4px 12px rgba(0,0,0,0.25);}
+    .highlight-tab img{width:28px;height:28px;margin:0;opacity:1;}
+    .highlight-label{margin-top:34px;font-size:12px;color:#9ca3af;}
+    .bottom-nav button.highlight.active .highlight-label{color:#2563eb;font-weight:600;}
+  </style>
+</head>
+<body>
+  <!-- TOPO -->
+  <header>
+    <div class="header-content">
+      <div class="header-left">
+        <span class="header-title">VANGSFUTURIS</span>
+        <select class="lang-select">
+          <option>English</option>
+          <option>Português</option>
+        </select>
+      </div>
+      <div class="header-right">
+        <div class="icon-btn">
+          <img src="https://img.icons8.com/ios-glyphs/30/bell.png"/>
+          <span class="notif-badge">0</span>
+        </div>
+        <div class="profile" id="profileMenuToggle">
+          <img src="https://img.icons8.com/ios-glyphs/30/user--v1.png"/>
+        </div>
+        <div class="dropdown" id="profileDropdown">
+          <button id="logoutHeader">Sair</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- SALDO -->
+  <div class="saldo-card">
+    <div class="saldo-user">
+      <span id="userName">Usuário</span>
+      <span class="user-id" id="userId"></span>
+    </div>
+    <div class="saldo-linha">
+      <div class="saldo-valor" id="userSaldo">Kz 0.00</div>
+      <div class="saldo-info">Carteira principal</div>
+    </div>
+  </div>
+
+  <!-- AÇÕES -->
+  <div class="action-grid">
+    <div class="action-card" onclick="location.href='deposito.html'">
+      <img src="https://img.icons8.com/fluency/48/money-transfer.png"/>
+      <span>Recarga</span>
+      <span>Adicionar fundos</span>
+    </div>
+    <div class="action-card" onclick="location.href='retirada.html'">
+      <img src="https://img.icons8.com/fluency/48/cash-in-hand.png"/>
+      <span>Retirada</span>
+      <span>Saque disponível</span>
+    </div>
+    <div class="action-card" onclick="location.href='equipe.html'">
+      <img src="https://img.icons8.com/fluency/48/conference-call.png"/>
+      <span>Equipe</span>
+      <span>Afiliados e convites</span>
+    </div>
+    <div class="action-card" onclick="location.href='invest.html'">
+      <img src="https://img.icons8.com/fluency/48/line-chart.png"/>
+      <span>Investir</span>
+      <span>Planos existentes</span>
+    </div>
+  </div>
+
+  <!-- BOTÃO SAIR GRANDE -->
+  <button class="logout-btn" id="logoutMain">Sair</button>
+
+  <div class="sobre-vanguard">
+    <h2>Sobre a Vangs</h2>
+    <p>A Vangs Group, Inc. é uma das maiores gestoras de fundos de investimento do mundo, fundada em 1975.  
+      É conhecida por oferecer fundos com taxas baixas e foco em investimento de longo prazo.  
+      A empresa é considerada séria e confiável, com milhões de investidores ao redor do mundo.
+    </p>
+  </div>
+
+  <div class="termos">
+    <h2>Termos e Condições</h2>
+    <p>Ao utilizar esta plataforma, você concorda que o investimento oferecido é 100% seguro e garantido.  
+      Todos os planos de investimento disponíveis possuem retorno fixo assegurado.  
+      A plataforma garante a proteção do capital e dos rendimentos prometidos.
+    </p>
+  </div>
+
+  <!-- RODAPÉ com novos ícones -->
+  <nav class="bottom-nav">
+    <button onclick="location.href='tela.html'" class="active">
+      <img src="https://img.icons8.com/fluency/48/home.png"/>
+      <span>Início</span>
+    </button>
+    <button onclick="location.href='ativos.html'">
+      <img src="https://img.icons8.com/fluency/48/tasks.png"/>
+      <span>Meus Planos</span>
+    </button>
+    <button class="highlight" onclick="location.href='invest.html'">
+      <div class="highlight-tab">
+        <img src="https://img.icons8.com/fluency/48/combo-chart.png"/>
+      </div>
+      <span class="highlight-label">Investir</span>
+    </button>
+    <button onclick="location.href='bancos.html'">
+      <img src="https://img.icons8.com/fluency/48/bank.png"/>
+      <span>Bancos</span>
+    </button>
+    <button onclick="window.open('https://wa.me/244900000000','_blank')">
+      <img src="https://img.icons8.com/fluency/48/customer-support.png"/>
+      <span>Suporte</span>
+    </button>
+  </nav>
+
+  <!-- Firebase scripts e JS originais mantidos -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyChrog4zZNoK8HTMl1MTMD43U7HHxBMtVw",
+      authDomain: "palpite3ad.firebaseapp.com",
+      databaseURL: "https://palpite3ad-default-rtdb.firebaseio.com",
+      projectId: "palpite3ad",
+      storageBucket: "palpite3ad.appspot.com",
+      messagingSenderId: "435372004187",
+      appId: "1:435372004187:web:3b7ee8b621fba094b2407e"
+    };
+    firebase.initializeApp(firebaseConfig);
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        const uid = user.uid;
+        document.getElementById('userId').innerText = "ID: " + uid.substring(0,6);
+        firebase.database().ref('usuarios/' + uid).once('value').then(snapshot => {
+          const data = snapshot.val();
+          if (data) {
+            document.getElementById('userName').innerText = data.nome || 'Usuário';
+            const saldo = Number(data.saldo || 0).toLocaleString('pt-AO',{minimumFractionDigits:2});
+            document.getElementById('userSaldo').innerText = "Kz " + saldo;
+          }
+        });
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+    function sair(){firebase.auth().signOut().then(()=>window.location.href="index.html");}
+    document.getElementById('logoutMain').addEventListener('click', sair);
+    document.getElementById('logoutHeader').addEventListener('click', sair);
+    const profileToggle = document.getElementById('profileMenuToggle');
+    const dropdown = document.getElementById('profileDropdown');
+    profileToggle.addEventListener('click', ()=>{dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';});
+    document.addEventListener('click', (e)=>{
+      if(!profileToggle.contains(e.target) && !dropdown.contains(e.target)){
+        dropdown.style.display='none';
+      }
+    });
+  </script>
+</body>
+</html>

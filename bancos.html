@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VANGSFUTRIS</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',sans-serif;}
+    body{
+      background: radial-gradient(circle at top left,#0a0f2d,#0b223d 70%);
+      color:#e0e6f0;
+      min-height:100vh;
+      padding:20px;
+    }
+    h1{
+      text-align:center;
+      color:#4ee0ff;
+      margin-bottom:25px;
+    }
+    .container{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+      gap:20px;
+      max-width:1000px;
+      margin:0 auto;
+    }
+    .card{
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(78,224,255,0.4);
+      border-radius:15px;
+      padding:20px;
+      transition:.3s;
+    }
+    .card:hover{box-shadow:0 0 20px rgba(78,224,255,0.3);}
+    .card h2{
+      text-align:center;
+      margin-bottom:10px;
+      color:#4ee0ff;
+    }
+    .form-group{margin-bottom:12px;}
+    label{display:block;margin-bottom:4px;font-size:0.9rem;color:#cfe7ff;}
+    input{
+      width:100%;
+      padding:10px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,0.1);
+      background:rgba(255,255,255,0.07);
+      color:#e0e6f0;
+      outline:none;
+    }
+    input:focus{border-color:#4ee0ff;}
+    button{
+      width:100%;
+      background:linear-gradient(90deg,#4ee0ff,#35b9d6);
+      color:#0a0f2d;
+      border:none;
+      padding:10px;
+      border-radius:10px;
+      font-weight:bold;
+      cursor:pointer;
+      transition:.3s;
+      margin-top:6px;
+    }
+    button:hover{background:linear-gradient(90deg,#35b9d6,#4ee0ff);}
+    .mensagem{
+      text-align:center;
+      margin-top:8px;
+      font-size:0.9rem;
+      min-height:20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Meus Bancos</h1>
+  <div class="container">
+    <!-- Um card para cada banco -->
+    <div class="card" id="card-BFA">
+      <h2>BFA</h2>
+      <div class="form-group">
+        <label>Conta/IBAN</label>
+        <input type="text" id="iban-BFA" placeholder="Digite a conta ou IBAN">
+      </div>
+      <div class="form-group">
+        <label>Titular</label>
+        <input type="text" id="titular-BFA" placeholder="Nome do titular">
+      </div>
+      <button onclick="salvarBanco('BFA')">Salvar</button>
+      <div class="mensagem" id="msg-BFA"></div>
+    </div>
+
+    <div class="card" id="card-ATL">
+      <h2>ATL</h2>
+      <div class="form-group">
+        <label>Conta/IBAN</label>
+        <input type="text" id="iban-ATL" placeholder="Digite a conta ou IBAN">
+      </div>
+      <div class="form-group">
+        <label>Titular</label>
+        <input type="text" id="titular-ATL" placeholder="Nome do titular">
+      </div>
+      <button onclick="salvarBanco('ATL')">Salvar</button>
+      <div class="mensagem" id="msg-ATL"></div>
+    </div>
+
+    <div class="card" id="card-BAI">
+      <h2>BAI</h2>
+      <div class="form-group">
+        <label>Conta/IBAN</label>
+        <input type="text" id="iban-BAI" placeholder="Digite a conta ou IBAN">
+      </div>
+      <div class="form-group">
+        <label>Titular</label>
+        <input type="text" id="titular-BAI" placeholder="Nome do titular">
+      </div>
+      <button onclick="salvarBanco('BAI')">Salvar</button>
+      <div class="mensagem" id="msg-BAI"></div>
+    </div>
+
+    <div class="card" id="card-BIC">
+      <h2>BIC</h2>
+      <div class="form-group">
+        <label>Conta/IBAN</label>
+        <input type="text" id="iban-BIC" placeholder="Digite a conta ou IBAN">
+      </div>
+      <div class="form-group">
+        <label>Titular</label>
+        <input type="text" id="titular-BIC" placeholder="Nome do titular">
+      </div>
+      <button onclick="salvarBanco('BIC')">Salvar</button>
+      <div class="mensagem" id="msg-BIC"></div>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyChrog4zZNoK8HTMl1MTMD43U7HHxBMtVw",
+      authDomain: "palpite3ad.firebaseapp.com",
+      databaseURL: "https://palpite3ad-default-rtdb.firebaseio.com",
+      projectId: "palpite3ad",
+      storageBucket: "palpite3ad.appspot.com",
+      messagingSenderId: "435372004187",
+      appId: "1:435372004187:android:3b7ee8b621fba094b2407e"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    let userId = null;
+
+    firebase.auth().onAuthStateChanged(user=>{
+      if(!user){
+        location.href = "index.html";
+      } else {
+        userId = user.uid;
+        // Pré-carregar dados já salvos
+        firebase.database().ref("usuarios/"+userId+"/dadosBancarios")
+          .once("value").then(snap=>{
+            const dados = snap.val() || {};
+            for(const banco in dados){
+              if(dados[banco]){
+                document.getElementById("iban-"+banco).value = dados[banco].iban || "";
+                document.getElementById("titular-"+banco).value = dados[banco].titular || "";
+              }
+            }
+          });
+      }
+    });
+
+    function salvarBanco(banco){
+      const iban = document.getElementById("iban-"+banco).value.trim();
+      const titular = document.getElementById("titular-"+banco).value.trim();
+      const msg = document.getElementById("msg-"+banco);
+      if(!iban || !titular){
+        msg.textContent = "⚠️ Preencha todos os campos.";
+        return;
+      }
+      firebase.database().ref("usuarios/"+userId+"/dadosBancarios/"+banco)
+        .set({iban,titular})
+        .then(()=>{
+          msg.textContent = "✅ Dados salvos com sucesso!";
+          setTimeout(()=>msg.textContent="",2000);
+        })
+        .catch(err=>{
+          msg.textContent = "Erro: " + err.message;
+        });
+    }
+  </script>
+</body>
+</html>

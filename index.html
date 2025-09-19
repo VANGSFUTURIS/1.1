@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Acessar</title>
+  <style>
+    :root {
+      --cor-fundo: #0b2340;      
+      --cor-principal: #ffffff;   
+      --cor-secundaria: #1976d2;  
+      --cor-input: #1a365f;       
+      --cor-input-texto: #ffffff; 
+      --cor-borda: #2c4b7a;       
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+    body { 
+      background: var(--cor-fundo); 
+      color: var(--cor-principal); 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      min-height: 100vh;
+    }
+
+    .card {
+      background: var(--cor-fundo);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 380px;
+      padding: 32px 24px;
+      color: var(--cor-principal);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+
+    .card h2 {
+      font-size: 22px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .etiqueta {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .campo {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .entrada {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid var(--cor-borda);
+      border-radius: var(--radius);
+      font-size: 15px;
+      outline: none;
+      background: var(--cor-input);
+      color: var(--cor-input-texto);
+      transition: 0.3s;
+    }
+
+    .entrada:focus {
+      border-color: var(--cor-secundaria);
+      box-shadow: 0 0 4px rgba(25,118,210,0.5);
+      background: #1f3a66;
+    }
+
+    .prefixo {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-weight: 600;
+      color: var(--cor-principal);
+      pointer-events: none;
+    }
+
+    .com-prefixo { padding-left: 64px; }
+
+    /* BOTÕES */
+    .linha-botoes {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .botao {
+      flex: 1;
+      padding: 14px;
+      font-weight: 600;
+      font-size: 16px;
+      border-radius: var(--radius);
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .botao-escuro {
+      background: var(--cor-secundaria);
+      color: var(--cor-principal);
+    }
+    .botao-escuro:hover { background: #3a7bd5; }
+
+    .botao-claro {
+      background: #1a365f;
+      color: var(--cor-principal);
+    }
+    .botao-claro:hover { background: #273f6e; }
+
+    /* Efeito de clique */
+    .botao:active {
+      transform: scale(0.97);
+      box-shadow: 0 0 12px rgba(255,255,255,0.4);
+    }
+
+    .mensagem-erro {
+      color: #ff6b6b;
+      font-size: 14px;
+      text-align: center;
+      margin-top: 12px;
+      min-height: 18px;
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Entrar na VANGSFUTURIS</h2>
+
+    <div class="etiqueta">Número de Telefone</div>
+    <div class="campo">
+      <span class="prefixo">+244</span>
+      <input id="telefone" class="entrada com-prefixo" type="tel" inputmode="numeric" placeholder="Ex: 923456789" />
+    </div>
+
+    <div class="etiqueta">Senha de Acesso</div>
+    <div class="campo">
+      <input id="senha" class="entrada" type="text" placeholder="Senha de Acesso" />
+    </div>
+
+    <div class="linha-botoes">
+      <button class="botao botao-claro" onclick="window.location.href='login.index.html'">Registrar</button>
+      <button class="botao botao-escuro" id="botaoAcessar">Entrar</button>
+    </div>
+
+    <div id="mensagemErro" class="mensagem-erro"></div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyChrog4zZNoK8HTMl1MTMD43U7HHxBMtVw",
+      authDomain: "palpite3ad.firebaseapp.com",
+      projectId: "palpite3ad",
+      storageBucket: "palpite3ad.appspot.com",
+      messagingSenderId: "435372004187",
+      appId: "1:435372004187:android:3b7ee8b621fba094b2407e",
+      databaseURL: "https://palpite3ad-default-rtdb.firebaseio.com"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    const botao = document.getElementById("botaoAcessar");
+    const msgErro = document.getElementById("mensagemErro");
+
+    function acessar() {
+      msgErro.textContent = ""; 
+      const tel = document.getElementById("telefone").value.replace(/\s+/g,'').trim();
+      const chave = document.getElementById("senha").value;
+
+      if (!/^\d{9}$/.test(tel)) {
+        msgErro.textContent = "Informe um número de telefone válido com 9 dígitos.";
+        return;
+      }
+      if (!chave){
+        msgErro.textContent = "Informe sua senha de acesso.";
+        return;
+      }
+
+      const emailFake = tel + "@kerocapital.com";
+
+      botao.disabled = true;
+
+      firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .then(()=>{
+        return firebase.auth().signInWithEmailAndPassword(emailFake, chave);
+      })
+      .then(() => {
+        window.location.href = "tela.html"; 
+      })
+      .catch(err => {
+        msgErro.textContent = "Falha ao entrar: " + err.message;
+      })
+      .finally(() => {
+        botao.disabled = false;
+      });
+    }
+
+    botao.addEventListener("click", acessar);
+    document.addEventListener("keydown", (e)=>{ if(e.key==="Enter") acessar(); });
+  </script>
+</body>
+</html>
