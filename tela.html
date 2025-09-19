@@ -6,7 +6,6 @@
   <title>VANGSFUTURIS</title>
   <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    /* --- estilos originais inalterados --- */
     *{box-sizing:border-box;margin:0;padding:0;}
     body{font-family:'Segoe UI',sans-serif;background:radial-gradient(circle at top,#0f172a,#020617);color:#f8fafc;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;padding-bottom:80px;}
     header{padding:12px 24px;background:#0f172a;border-bottom:1px solid rgba(255,255,255,0.08);}
@@ -157,10 +156,18 @@
       <img src="https://img.icons8.com/fluency/48/bank.png"/>
       <span>Bancos</span>
     </button>
-    <button onclick="window.open('https://wa.me/244900000000','_blank')">
-      <img src="https://img.icons8.com/fluency/48/customer-support.png"/>
-      <span>Suporte</span>
-    </button>
+
+    <!-- SUPORTE COM DROPDOWN -->
+    <div style="position:relative; flex:1; display:flex; justify-content:center;">
+      <button id="suporteBtn">
+        <img src="https://img.icons8.com/fluency/48/customer-support.png"/>
+        <span>Suporte</span>
+      </button>
+      <div id="suporteDropdown" style="display:none;position:absolute;bottom:48px;flex-direction:column;background:#1e293b;color:#f8fafc;border-radius:12px;padding:10px;min-width:180px;box-shadow:0 4px 12px rgba(0,0,0,0.3);z-index:100;">
+        <button onclick="window.open('tel:+244958557101','_blank')" style="margin-bottom:6px;background:none;border:none;color:#22c55e;font-weight:600;cursor:pointer;text-align:left;">Atendimento online: 958557101</button>
+        <button onclick="window.open('https://chat.whatsapp.com/GYNSBofs5hv8BIymybS9zC?mode=ems_copy_t','_blank')" style="background:none;border:none;color:#3b82f6;font-weight:600;cursor:pointer;text-align:left;">Grupo WhatsApp</button>
+      </div>
+    </div>
   </nav>
 
   <!-- Firebase scripts e JS originais mantidos -->
@@ -197,13 +204,28 @@
     function sair(){firebase.auth().signOut().then(()=>window.location.href="index.html");}
     document.getElementById('logoutMain').addEventListener('click', sair);
     document.getElementById('logoutHeader').addEventListener('click', sair);
+
     const profileToggle = document.getElementById('profileMenuToggle');
     const dropdown = document.getElementById('profileDropdown');
     profileToggle.addEventListener('click', ()=>{dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';});
+
     document.addEventListener('click', (e)=>{
       if(!profileToggle.contains(e.target) && !dropdown.contains(e.target)){
         dropdown.style.display='none';
       }
+    });
+
+    // Suporte dropdown
+    const suporteBtn = document.getElementById('suporteBtn');
+    const suporteDropdown = document.getElementById('suporteDropdown');
+
+    suporteBtn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      suporteDropdown.style.display = suporteDropdown.style.display === 'flex' ? 'none' : 'flex';
+    });
+
+    document.addEventListener('click', ()=>{
+      suporteDropdown.style.display = 'none';
     });
   </script>
 </body>
