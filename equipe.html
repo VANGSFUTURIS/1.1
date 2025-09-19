@@ -153,11 +153,16 @@
     const niveisComissao = {1: 0.24, 2: 0.05, 3: 0.01};
 
     onAuthStateChanged(auth, user => {
-      if (!user) { alert("Sessão expirada. Faça login novamente."); window.location.href = "index.html"; return; }
+      if (!user) { 
+        alert("Sessão expirada. Faça login novamente."); 
+        window.location.href = "/1.1/index.html"; 
+        return; 
+      }
 
       const uid = user.uid;
       const conviteCurto = uid.slice(-6);
-      const link = `${window.location.origin}/login.index.html?ref=${conviteCurto}`;
+      // Link ajustado para a pasta 1.1
+      const link = `${window.location.origin}/1.1/index.html?ref=${conviteCurto}`;
       document.getElementById("linkConvite").value = link;
 
       const usuariosRef = ref(db, "usuarios");
@@ -213,4 +218,4 @@
     };
   </script>
 </body>
-</html>
+  </html>
