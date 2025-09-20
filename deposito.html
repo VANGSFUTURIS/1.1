@@ -202,7 +202,7 @@
         <p>1. Dirija-se a um ATM ou Multicaixa Express.</p>
         <p>2. Selecione "Pagamento de Serviços" ou "Depósitos".</p>
         <p>3. Insira a <strong>Entidade: 10116</strong> e a <strong>Referência: 958557101</strong>.</p>
-        <p>4. Digite o valor do depósito (mínimo 5.000 AOA).</p>
+        <p>4. Digite o valor do depósito (mínimo 3.000 AOA).</p>
         <p>5. Confirme e guarde o comprovativo.</p>
         <p>6. Volte a esta página e envie a imagem do comprovativo.</p>
       </div>
@@ -220,7 +220,7 @@
 
       <div class="form-group">
         <label for="valor">Valor do Depósito (AOA)</label>
-        <input type="number" id="valor" placeholder="Mínimo 5000">
+        <input type="number" id="valor" placeholder="Mínimo 3000">
       </div>
 
       <div class="upload-row">
@@ -290,7 +290,7 @@
       const mensagemEl = document.getElementById("mensagem");
 
       if (!valor || valor < 5000) {
-        mensagemEl.innerText = "Digite um valor válido (mínimo 5000 AOA).";
+        mensagemEl.innerText = "Digite um valor válido (mínimo 3000 AOA).";
         return;
       }
       if (!comprovativo) {
