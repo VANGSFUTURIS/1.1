@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>VANGSFUTURIS</title>
   <style>
     body {
@@ -220,7 +220,7 @@
 
       <div class="form-group">
         <label for="valor">Valor do Depósito (AOA)</label>
-        <input type="number" id="valor" placeholder="Mínimo 3000">
+        <input type="number" id="valor" placeholder="Mínimo 3000" min="3000" step="1">
       </div>
 
       <div class="upload-row">
@@ -259,6 +259,7 @@
 
     firebase.initializeApp(firebaseConfig);
 
+    // Redireciona para index se não autenticado
     firebase.auth().onAuthStateChanged(user => {
       if (!user) location.href = "index.html";
     });
@@ -285,23 +286,33 @@
 
     async function enviarComprovativo() {
       const user = firebase.auth().currentUser;
-      const valor = parseFloat(document.getElementById("valor").value);
+      const valorInput = document.getElementById("valor").value;
+      const valor = parseFloat(valorInput);
       const comprovativo = document.getElementById("comprovativo").files[0];
       const mensagemEl = document.getElementById("mensagem");
 
-      if (!valor || valor < 5000) {
-        mensagemEl.innerText = "Digite um valor válido (mínimo 3000 AOA).";
+      // Regra: mínimo 3000 AOA
+      const MINIMO = 3000;
+
+      if (!valorInput || isNaN(valor) || valor < MINIMO) {
+        mensagemEl.innerText = `Digite um valor válido (mínimo ${MINIMO} AOA).`;
         return;
       }
       if (!comprovativo) {
         mensagemEl.innerText = "Por favor, selecione o comprovativo (imagem).";
         return;
       }
+      if (!user) {
+        mensagemEl.innerText = "Usuário não autenticado. Faça login novamente.";
+        return;
+      }
 
       try {
-        const snapshot = await firebase.storage()
-          .ref(`comprovativos/${user.uid}/${Date.now()}-${comprovativo.name}`)
-          .put(comprovativo);
+        mensagemEl.innerText = "⏳ Enviando comprovativo...";
+        const storageRef = firebase.storage()
+          .ref(`comprovativos/${user.uid}/${Date.now()}-${comprovativo.name}`);
+
+        const snapshot = await storageRef.put(comprovativo);
         const url = await snapshot.ref.getDownloadURL();
 
         const userRef = firebase.database().ref("usuarios/" + user.uid);
@@ -331,4 +342,4 @@
     }
   </script>
 </body>
-</html>
+  </html>
